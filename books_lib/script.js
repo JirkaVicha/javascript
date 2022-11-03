@@ -43,6 +43,15 @@ function clearForm() {
   }
 };
 
+// Title Case function for title and author
+function titleCase(str) {
+  let splitStr = str.toLowerCase().split(' ');
+  for (let i = 0; i < splitStr.length; i++) {
+    splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+  }
+  return splitStr.join(' ');
+}
+
 // Show book on the page by creating the div elements
 function displayBook(index) {
     let div = document.getElementsByClassName('library')[0].appendChild(document.createElement('div'));
@@ -50,15 +59,15 @@ function displayBook(index) {
 
     bookTitle = div.appendChild(document.createElement('h2'));
     bookTitle.classList.add('title');
-    bookTitle.appendChild(document.createTextNode(library[index].title));
+    bookTitle.appendChild(document.createTextNode(titleCase(library[index].title)));
 
     bookAuthor = div.appendChild(document.createElement('h3'));
     bookAuthor.classList.add('author');
-    bookAuthor.appendChild(document.createTextNode(library[index].author));
+    bookAuthor.appendChild(document.createTextNode(titleCase(library[index].author)));
 
     bookPages = div.appendChild(document.createElement('h4'));
     bookPages.classList.add('pages');
-    bookPages.appendChild(document.createTextNode(library[index].pages));
+    bookPages.appendChild(document.createTextNode(library[index].pages + " pages"));
 
     bookRead = div.appendChild(document.createElement('h4'));
     bookRead.classList.add('read');
@@ -68,8 +77,22 @@ function displayBook(index) {
     } else {
       bookRead.textContent = "unread yet"
     }
+
+    bookDelete = div.appendChild(document.createElement('button'));
+    bookDelete.appendChild(document.createTextNode('Delete'));
+    bookDelete.classList.add('delete-book');
+    bookDelete.book = library[index];
+    bookDelete.index = index;
+    bookDelete.div = div;
+    bookDelete.addEventListener('click', deleteBook);
 };
 
+// Remove Book from library
+function deleteBook() {
+  library.splice(library.findIndex(item => item.title === this.book.title), 1);
+  delete this.book;
+  this.div.remove();
+};
 
 // Button to add new book, after click execute function for clearing the form
 const addNewBook = document.getElementById('add-book');
